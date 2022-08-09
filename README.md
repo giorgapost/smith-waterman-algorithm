@@ -1,6 +1,6 @@
 # Smith - Waterman algorithm in C++
 
-This system execute the [Smith - Waterman algorithm.](https://www.sciencedirect.com/science/article/pii/0022283681900875)
+This system executes the [Smith - Waterman algorithm.](https://www.sciencedirect.com/science/article/pii/0022283681900875)
 It performs local sequence alignment by comparing segments of all possible lengths and optimizing the similarity metric.
 
 ## Table of Contents
