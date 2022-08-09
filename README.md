@@ -1,2 +1,141 @@
 # Smith - Waterman algorithm in C++
-An implementation of the Smith-Waterman algorithm in C++.  The system consists of 3 different implementations: the one is sequential, while the other two parallelize the execution in a coarse and a fine level respectively, with the use of multithreading.
+
+This system execute the [Smith - Waterman algorithm.](https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm)
+It performs local sequence alignment by comparing segments of all possible lengths and optimizing the similarity metric.
+
+## Table of Contents
+
+- [Description](#description)
+- [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Compilation instructions](#compilation-instructions)
+- [Usage](#usage)
+- [Status](#status)
+- [License](#license)
+- [Authors](#authors)
+
+## Description
+
+This system accepts an input ASCII file containing some pairs of sequences to be aligned,
+and produces an output ASCII file with all the optimal alignments for every pair. Notice that
+the optimal alignments for each pair may be more than one.
+
+Three different implementations of the algorithm coexist in the provided system:
+- **Sequential implementation:** The algorithm is executed completely sequentially. The alignments
+for each pair are computed after the process has been completed for the previous one.
+- **Parallel implementation in a coarse-grained level:** The algorithm is parallelized in a coarse-grained level
+via multithreading. The alignments for different pairs of sequences may be computed in parallel by different
+threads. However, the algorithm that computes the optimal alignments for a specific pair is executed sequentially.
+- **Parallel implementation in a fine-grained level:** The algorithm is parallelized in a fine-grained level
+via multithreading. The cells of the scoring matrix (which is required by the algorithm) are computed in parallel via
+multiple threads. However, the algorithm is executed sequentially through different pairs (i.e. for one
+pair at a time).
+
+> **Note**  
+> When the algorithm completes, some statistics are printed at console about the execution time of
+its various stages.
+
+## Getting Started
+
+### Prerequisites
+
+The following header libraries need to be installed.
+
+- fstream
+- iostream
+- omp.h
+- stdexcept
+- stdio.h 
+- stdlib.h
+- string
+- vector
+- sys/time.h
+
+Moreover, the `g++` compiler needs to be installed too, as well as the `make` utility for Linux distros.
+In a Debian-based Linux distribution, all prerequisites can be installed with the following command:
+```bash
+sudo apt install -y build-essential
+```
+In Windows 10 or later it is recommended to use [MinGW-w64](https://www.mingw-w64.org/) (however any other compatible compiler
+is also acceptable).
+
+### Compilation instructions
+
+- **Linux:** The system may be compiled and run under any Linux distribution. However, it has been tested only in Ubuntu (18.04 and later),
+so please let me know if you observe any issues with other distros. To download and compile it open a terminal and run:
+```bash
+git clone https://github.com/giorgapost/smith-waterman-algorithm
+cd smith-waterman-algorithm
+make
+```
+
+- **Windows 10 or later:** The system may be compiled and run under Windows too. To download it,
+open a PowerShell window or a Command Prompt and run:
+```bash
+git clone https://github.com/giorgapost/smith-waterman-algorithm
+cd smith-waterman-algorithm
+```
+Alternatively, you may use the [Github Desktop](https://desktop.github.com/) application in order to clone the repository.
+
+Afterwards, navigate to the directory of the downloaded files and simply run (double left click)
+the file `WinBuild.bat`.
+
+Finally, to generate detailed documentation of the source code the [Doxygen](https://doxygen.nl/) tool can be utilized.
+
+## Usage
+When the program is executed, the following arguments need to be provided:
+- `-parallel <integer>`, i.e. the version of the algorithm that will run. Set the integer equal to 1 for the sequential
+version, 2 for the coarse-grained parallel version and 3 for the fine-grained parallel version.
+- `-threads <integer>`, i.e. the number of threads for the cases where a parallel implementation is going to be executed.
+If the sequential algorithm has been chosen, this argument is ignored.
+- `-path <string>`, i.e. the path to an input ASCII file with the pairs of the sequences which need alignment. The format
+of the file must be the following (also see examples in folder `/datasets/`):
+```bash
+Q: ...... <symbols of the 1st sequence of the pair> ......
+D: ...... <symbols of the 2nd sequence of the pair> ......
+
+Q: ...... <symbols of the 1st sequence of the pair> ......
+D: ...... <symbols of the 2nd sequence of the pair> ......
+
+Q: ...... <symbols of the 1st sequence of the pair> ......
+D: ...... <symbols of the 2nd sequence of the pair> ......
+   .
+	 .
+	 .
+```
+- `-id <string>`, i.e. an ID for the filename of the report that will be generated by the algorithm. That report will contain
+the optimal alignments for every input pair, will be located at `/reports/` subdirectory and its filename will be `Report_ID.txt`.
+- `-match <integer>`, i.e. the parameter that defines the score of a match (for more details see the description of the algorithmic process).
+- `-mismatch <integer>`, i.e. the parameter that defines the score of a mismatch (for more details see the description of the algorithmic process).
+- `-gap <integer>`, i.e. the parameter that defines the score of a gap (for more details see the description of the algorithmic process).
+
+> **Note**  
+> Extra arguments (not mentioned above) will be ignored and no error will be produced. However if some of the aforementioned
+arguments are missing, then an error will be printed in console and the program will be terminated.
+
+In the special case where the system is executed with no arguments at all, then it asks for the user to provide their values
+(with consecutive questions through console). However this can not happen if the user provides 1 or more arguments.
+
+Some examples on how to run the compiled system can be seen below:
+```bash
+./smith_waterman #for Linux computers
+./smith_waterman -parallel 2 -threads 4 -path datasets/D1.txt -id D1 -match 1 -gap 0 -mismatch -1 #for Linux computers
+
+.\smith_waterman.exe #for Windows computers
+.\smith_waterman.exe -parallel 2 -threads 4 -path datasets/D1.txt -id D1 -match 1 -gap 0 -mismatch -1 #for Windows computers
+```
+
+> **Note**  
+> Subdirectory `/datasets/` contains samples of input files with pairs of sequences to be aligned.
+
+## Status
+
+Under maintenance.
+
+## License
+
+Distributed under the GPL-3.0 License. See [`LICENSE`](LICENSE) for more information.
+
+## Authors
+
+[Georgios Apostolakis](https://www.linkedin.com/in/giorgapost)
